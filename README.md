@@ -6,7 +6,8 @@
 - 월간 대시보드 API (`/api/dashboard/summary`)
 - 보험 CRUD API (`/api/insurance`)
 - 은퇴 추천 API (`/api/retirement/recommendation`)
-- 계산기 페이지 (`/calculators`) - 단리/복리/예금/적금/대출/배당/은퇴 목표
+- 계산기 페이지 (`/calculators`) - 단리/복리/예금/적금/대출(원리금균등/원금균등/만기일시)/배당/은퇴 목표
+- 은퇴 리포트 페이지 (`/retirement`) - 월 부족분 및 행동 추천
 - 메인 화면 카드 + 보험 등록 폼 + 보험 테이블 UI
 - Prisma 스키마(수입/지출/투자/저축/보험/은퇴)
 
