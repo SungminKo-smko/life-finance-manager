@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { getUserId } from "@/lib/client-auth";
+import { RetirementQuickForm } from "@/components/RetirementQuickForm";
 
 type RetirementResponse = {
   targetRetireAge: number;
@@ -15,17 +16,23 @@ type RetirementResponse = {
 export default function RetirementPage() {
   const [data, setData] = useState<RetirementResponse | null>(null);
 
-  useEffect(() => {
+  const load = () => {
     const userId = getUserId();
     fetch(`/api/retirement/recommendation?userId=${encodeURIComponent(userId)}`)
       .then((r) => r.json())
       .then((d) => setData(d));
+  };
+
+  useEffect(() => {
+    load();
   }, []);
 
   return (
     <main className="container">
       <h1 className="h1">은퇴 추천 리포트</h1>
       <p className="muted">현재 수입/지출/보험/저축/투자를 기준으로 목표 은퇴나이 달성 가능성을 계산합니다.</p>
+
+      <RetirementQuickForm onSaved={load} />
 
       {!data ? (
         <div className="card">로딩 중...</div>
