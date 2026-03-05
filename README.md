@@ -5,13 +5,16 @@
 ## 포함 기능
 - 월간 대시보드 API (`/api/dashboard/summary`)
 - 보험 CRUD API (`/api/insurance`)
-- 메인 화면 카드 + 보험 테이블 UI
+- 은퇴 추천 API (`/api/retirement/recommendation`)
+- 계산기 페이지 (`/calculators`) - 단리/복리/예금/적금/대출/배당/은퇴 목표
+- 메인 화면 카드 + 보험 등록 폼 + 보험 테이블 UI
 - Prisma 스키마(수입/지출/투자/저축/보험/은퇴)
 
 ## 실행
 ```bash
 npm install
 npx prisma generate
+npx prisma migrate dev --name init
 npm run dev
 ```
 
