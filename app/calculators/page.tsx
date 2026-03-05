@@ -11,6 +11,7 @@ import {
   simpleInterest,
   type LoanMethod
 } from "@/lib/calculators";
+import { toCsv } from "@/lib/csv";
 
 export default function CalculatorsPage() {
   const [principal, setPrincipal] = useState(10000000);
@@ -27,6 +28,17 @@ export default function CalculatorsPage() {
   const schedule = useMemo(() => loanSchedule(loanPrincipal, rate, loanMonths, loanMethod), [loanPrincipal, rate, loanMonths, loanMethod]);
   const schedulePreview = schedule.slice(0, 12);
   const totalInterest = schedule.reduce((acc, row) => acc + row.interestPaid, 0);
+
+  const downloadCsv = () => {
+    const csv = toCsv(schedule);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `loan_schedule_${loanMethod}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
   const dividend = useMemo(() => dividendIncome(200000000, 4.2), []);
   const retire = useMemo(() => retirementTargetAsset(4000000, 4), []);
 
@@ -75,7 +87,10 @@ export default function CalculatorsPage() {
       </div>
 
       <div className="card">
-        <h3 style={{ marginTop: 0 }}>상환 스케줄 미리보기 (1~12회차)</h3>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <h3 style={{ marginTop: 0 }}>상환 스케줄 미리보기 (1~12회차)</h3>
+          <button onClick={downloadCsv}>전체 회차 CSV 다운로드</button>
+        </div>
         <table className="table">
           <thead>
             <tr>

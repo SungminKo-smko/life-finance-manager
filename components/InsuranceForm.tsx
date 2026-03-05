@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { getUserId } from "@/lib/client-auth";
 
 export function InsuranceForm() {
   const [form, setForm] = useState({
@@ -15,13 +16,11 @@ export function InsuranceForm() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await fetch("/api/insurance", {
+    const userId = getUserId();
+    await fetch(`/api/insurance?userId=${encodeURIComponent(userId)}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...form,
-        monthlyPremium: Number(form.monthlyPremium)
-      })
+      body: JSON.stringify({ ...form, monthlyPremium: Number(form.monthlyPremium) })
     });
     alert("보험이 등록되었습니다. 새로고침하면 목록에 표시됩니다.");
   };

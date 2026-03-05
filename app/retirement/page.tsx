@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getUserId } from "@/lib/client-auth";
 
 type RetirementResponse = {
   targetRetireAge: number;
@@ -15,7 +16,8 @@ export default function RetirementPage() {
   const [data, setData] = useState<RetirementResponse | null>(null);
 
   useEffect(() => {
-    fetch("/api/retirement/recommendation")
+    const userId = getUserId();
+    fetch(`/api/retirement/recommendation?userId=${encodeURIComponent(userId)}`)
       .then((r) => r.json())
       .then((d) => setData(d));
   }, []);

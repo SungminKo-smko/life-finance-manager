@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { MonthlySummary } from "@/lib/types";
+import { getUserId } from "@/lib/client-auth";
 
 const initial: MonthlySummary = { income: 0, expense: 0, invest: 0, save: 0, insurance: 0, net: 0 };
 
@@ -9,7 +10,8 @@ export function MonthlyDashboard() {
   const [summary, setSummary] = useState<MonthlySummary>(initial);
 
   useEffect(() => {
-    fetch("/api/dashboard/summary")
+    const userId = getUserId();
+    fetch(`/api/dashboard/summary?userId=${encodeURIComponent(userId)}`)
       .then((r) => r.json())
       .then((d) => setSummary(d))
       .catch(() => setSummary(initial));

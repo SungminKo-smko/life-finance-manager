@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getUserId } from "@/lib/client-auth";
 
 type InsuranceItem = {
   id: string;
@@ -16,12 +17,21 @@ type InsuranceItem = {
 export function InsurancePanel() {
   const [items, setItems] = useState<InsuranceItem[]>([]);
 
+  const load = async () => {
+    const userId = getUserId();
+    const r = await fetch(`/api/insurance?userId=${encodeURIComponent(userId)}`);
+    const d = await r.json();
+    setItems(d.items ?? []);
+  };
+
   useEffect(() => {
-    fetch("/api/insurance")
-      .then((r) => r.json())
-      .then((d) => setItems(d.items ?? []))
-      .catch(() => setItems([]));
+    load().catch(() => setItems([]));
   }, []);
+
+  const remove = async (id: string) => {
+    await fetch(`/api/insurance/${id}`, { method: "DELETE" });
+    await load();
+  };
 
   const total = items.reduce((acc, i) => acc + Number(i.monthlyPremium ?? 0), 0);
 
@@ -43,12 +53,13 @@ export function InsurancePanel() {
             <th>월 보험료</th>
             <th>상태</th>
             <th>만기일</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           {items.length === 0 ? (
             <tr>
-              <td colSpan={7} className="muted">등록된 보험이 없습니다.</td>
+              <td colSpan={8} className="muted">등록된 보험이 없습니다.</td>
             </tr>
           ) : (
             items.map((item) => (
@@ -60,6 +71,7 @@ export function InsurancePanel() {
                 <td>{new Intl.NumberFormat("ko-KR").format(Number(item.monthlyPremium))}원</td>
                 <td>{item.status}</td>
                 <td>{item.endDate ? new Date(item.endDate).toLocaleDateString("ko-KR") : "-"}</td>
+                <td><button onClick={() => remove(item.id)}>삭제</button></td>
               </tr>
             ))
           )}
